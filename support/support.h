@@ -30,6 +30,28 @@ std::vector<int> readFileIntegers(std::string fileName)
   return data;
 }
 
+std::vector<std::string> readFileStrings(std::string fileName)
+{
+
+  std::vector<std::string> data;
+
+  string line;
+  ifstream myfile(fileName);
+  if (myfile.is_open())
+  {
+    while (getline(myfile, line))
+    {
+      data.push_back(line);
+    }
+    myfile.close();
+  }
+
+  else
+    cout << "Unable to open file";
+
+  return data;
+}
+
 std::string findFileLocation(int argc, char *argv[], std::string fileName)
 {
   (void)argc;
