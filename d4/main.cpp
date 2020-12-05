@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <map>
 #include <functional>
+#include <regex>
 #include "support/support.h"
 
 std::vector<std::string> seperatePersons(std::vector<std::string> data);
@@ -57,98 +58,37 @@ bool validPassport(std::string onePerson)
 {
   std::map<std::string, std::function<bool(std::string)>> keyMap;
 
-  auto integerCheck = [](std::string input, int lower, int upper) {
-    int value = stoi(input);
-    return value >= lower && upper >= value;
-  };
-
-  keyMap.emplace("byr", [integerCheck](std::string input) { return integerCheck(input, 1920, 2002); });
-
-  keyMap.emplace("iyr", [integerCheck](std::string input) { return integerCheck(input, 2010, 2020); });
-
-  keyMap.emplace("eyr", [integerCheck](std::string input) { return integerCheck(input, 2020, 2030); });
-
-  keyMap.emplace("hgt", [integerCheck](std::string input) {
-    if (input.find("cm") != std::string::npos)
-    {
-      return integerCheck(input.substr(0, 3), 150, 193);
-    }
-    else if (input.find("in") != std::string::npos)
-    {
-      return integerCheck(input.substr(0, 2), 59, 76);
-    }
-    return false;
+  keyMap.emplace("byr", [](std::string full) {
+    return regex_search(full, regex("\\s*byr:(19[2-9][0-9]|200[0-2])\\s"));
   });
 
-  keyMap.emplace("hcl", [](std::string input) {
-    if (input.size() != 7)
-    {
-      return false;
-    }
-    if (input.substr(0, 1) != "#")
-    {
-      return false;
-    }
-    std::string validSing = "0123456789abcdef";
-    for (unsigned int i = 1; i < input.size(); i++)
-    {
-      if (validSing.find(input.substr(i, 1)) == std::string::npos)
-      {
-        return false;
-      }
-    }
-    return true;
+  keyMap.emplace("iyr", [](std::string full) {
+    return regex_search(full, regex("\\s*iyr:20(1[0-9]|20)\\s"));
   });
 
-  keyMap.emplace("ecl", [](std::string input) {
-    std::vector<std::string> validData = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
-    if (input.size() != 3)
-    {
-      return false;
-    }
-    for (std::string valid : validData)
-    {
-      if (input == valid)
-      {
-        return true;
-      }
-    }
-    return false;
+  keyMap.emplace("eyr", [](std::string full) {
+    return regex_search(full, regex("\\s*eyr:20(2[0-9]|30)\\s"));
   });
 
-  keyMap.emplace("pid", [](std::string input) {
-    std::string validSing = "0123456789";
-
-    if (input.size() != 9)
-    {
-      return false;
-    }
-
-    for (unsigned int i = 0; i < input.size(); i++)
-    {
-      if (validSing.find(input.substr(i, 1)) == std::string::npos)
-      {
-        return false;
-      }
-    }
-    return true;
+  keyMap.emplace("hgt", [](std::string full) {
+    return regex_search(full, regex("\\s*hgt:(1([5-8][0-9]|9[0-3])cm|(59|6[0-9]|7[0-6])in)\\s"));
   });
 
-  //std::cout << oneLinePerson << std::endl;
+  keyMap.emplace("hcl", [](std::string full) {
+    return regex_search(full, regex("\\s*hcl:#[0-9a-f]{6}\\s"));
+  });
+
+  keyMap.emplace("ecl", [](std::string full) {
+    return regex_search(full, regex("\\s*ecl:(amb|blu|brn|gry|grn|hzl|oth)\\s"));
+  });
+
+  keyMap.emplace("pid", [](std::string full) {
+    return regex_search(full, regex("\\s*pid:[0-9]{9}\\s"));
+  });
+
   for (std::map<std::string, std::function<bool(std::string)>>::iterator it = keyMap.begin(); it != keyMap.end(); ++it)
   {
-    int position = onePerson.find(it->first + ":");
-    if (position == (int)std::string::npos)
-    {
-      return false;
-    }
-    unsigned int colonPosition = onePerson.find(":", position) + 1;
-    unsigned int nextSpace = onePerson.find(" ", position);
-
-    std::string value = onePerson.substr(colonPosition, nextSpace - colonPosition);
-    //std::cout << "Key: " << it->first + ":" << " - Value: " << value << std::endl;
-
-    if (!((it->second)(value)))
+    if (!((it->second)(onePerson)))
     {
       return false;
     }
