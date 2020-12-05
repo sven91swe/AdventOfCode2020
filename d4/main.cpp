@@ -56,39 +56,39 @@ std::vector<std::string> seperatePersons(std::vector<std::string> data)
 
 bool validPassport(std::string onePerson)
 {
-  std::map<std::string, std::function<bool(std::string)>> keyMap;
+  std::vector<std::function<bool(std::string)>> passportChecks;
 
-  keyMap.emplace("byr", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*byr:(19[2-9][0-9]|200[0-2])\\s"));
   });
 
-  keyMap.emplace("iyr", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*iyr:20(1[0-9]|20)\\s"));
   });
 
-  keyMap.emplace("eyr", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*eyr:20(2[0-9]|30)\\s"));
   });
 
-  keyMap.emplace("hgt", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*hgt:(1([5-8][0-9]|9[0-3])cm|(59|6[0-9]|7[0-6])in)\\s"));
   });
 
-  keyMap.emplace("hcl", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*hcl:#[0-9a-f]{6}\\s"));
   });
 
-  keyMap.emplace("ecl", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*ecl:(amb|blu|brn|gry|grn|hzl|oth)\\s"));
   });
 
-  keyMap.emplace("pid", [](std::string full) {
+  passportChecks.emplace_back([](std::string full) {
     return regex_search(full, regex("\\s*pid:[0-9]{9}\\s"));
   });
 
-  for (std::map<std::string, std::function<bool(std::string)>>::iterator it = keyMap.begin(); it != keyMap.end(); ++it)
+  for (std::function<bool(std::string)> check: passportChecks)
   {
-    if (!((it->second)(onePerson)))
+    if (!check(onePerson))
     {
       return false;
     }
