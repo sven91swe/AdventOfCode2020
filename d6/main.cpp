@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
 
     int answerForGroup2 = answersPerGroup2(onePerson);
     sumOfAnswerPerGroup2 += answerForGroup2;
-    std::cout << onePerson << " " << answerForGroup << " " << answerForGroup2 << std::endl;
+    std::cout << onePerson << " p1:" << answerForGroup << " p2:" << answerForGroup2 << std::endl;
   }
 
-  std::cout << "Number of answers are: " << sumOfAnswerPerGroup << " " << sumOfAnswerPerGroup2 << std::endl;
+  std::cout << "Number of answers are: p1:" << sumOfAnswerPerGroup << " p2:" << sumOfAnswerPerGroup2 << std::endl;
 
   return 0;
 }
@@ -49,7 +49,7 @@ std::vector<std::string> seperateGroups(std::vector<std::string> data)
       tempGroup += line + " ";
     }
   }
-  //Final person if data doesn't end with an empty line.
+  //Final group if data doesn't end with an empty line.
   if (tempGroup.size() != 0)
   {
     output.emplace_back(tempGroup);
@@ -61,32 +61,25 @@ std::vector<std::string> seperateGroups(std::vector<std::string> data)
 int answersPerGroup(std::string oneGroup)
 {
   std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
-  std::vector<std::string> answerKeys;
-  for (unsigned int i = 0; i < alphabet.length(); i++)
-  {
-    answerKeys.emplace_back(alphabet.substr(i, 1));
-  }
-
   int numberOfPresentAnswerKeys = 0;
 
-  for (std::string key : answerKeys)
+  for (char key : alphabet)
   {
     if (oneGroup.find(key) != std::string::npos)
     {
       numberOfPresentAnswerKeys++;
     }
   }
-
   return numberOfPresentAnswerKeys;
 }
 
 int answersPerGroup2(std::string oneGroup)
 {
-  std::function<int(std::string, std::string)> numberOfMatchingStrings = [](std::string input, std::string match) {
+  std::function<int(std::string, char)> numberOfMatchingStrings = [](std::string input, char match) {
     int counts = 0;
     for (char c : input)
     {
-      if (c == match.at(0))
+      if (c == match)
       {
         counts++;
       }
@@ -94,25 +87,16 @@ int answersPerGroup2(std::string oneGroup)
     return counts;
   };
 
-  int numberOfMembersInGroup = numberOfMatchingStrings(oneGroup, " ");
-
+  int numberOfMembersInGroup = numberOfMatchingStrings(oneGroup, ' ');
   std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
-  //std::string alphabet = "abc";
-  std::vector<std::string> answerKeys;
-  for (unsigned int i = 0; i < alphabet.length(); i++)
-  {
-    answerKeys.emplace_back(alphabet.substr(i, 1));
-  }
-
   int numberOfPresentAnswerKeys = 0;
 
-  for (std::string key : answerKeys)
+  for (char key : alphabet)
   {
     if (numberOfMatchingStrings(oneGroup, key) == numberOfMembersInGroup)
     {
       numberOfPresentAnswerKeys++;
     }
   }
-
   return numberOfPresentAnswerKeys;
 }
