@@ -81,14 +81,16 @@ std::map<std::string, BagData> buildBags(std::vector<std::string> data)
 
 bool containsBag(std::map<std::string, BagData> data, std::string startBag, std::string searchName)
 {
-  bool contains = false;
   BagData bag = data.at(startBag);
   for (auto const &p : bag.containsBags)
   {
-    contains |= searchName == p.first;
-    contains |= containsBag(data, p.first, searchName);
+    if(searchName == p.first){
+      return true;
+    }else if(containsBag(data, p.first, searchName)){
+      return true;
+    }
   }
-  return contains;
+  return false;
 }
 
 int containsNumberOfBags(std::map<std::string, BagData> data, std::string startBag)
