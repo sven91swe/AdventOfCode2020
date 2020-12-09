@@ -13,7 +13,7 @@ struct BagData
 
 std::map<std::string, BagData> buildBags(std::vector<std::string> data);
 
-bool containsBag(std::map<std::string, BagData> data, std::string startBag, std::string searchName);
+bool containsBag(std::map<std::string, BagData> &data, std::string startBag, std::string searchName);
 int containsNumberOfBags(std::map<std::string, BagData> data, std::string startBag);
 
 int main(int argc, char *argv[])
@@ -79,7 +79,7 @@ std::map<std::string, BagData> buildBags(std::vector<std::string> data)
   return output;
 }
 
-bool containsBag(std::map<std::string, BagData> data, std::string startBag, std::string searchName)
+bool containsBag(std::map<std::string, BagData> &data, std::string startBag, std::string searchName)
 {
   BagData bag = data.at(startBag);
   for (auto const &p : bag.containsBags)
