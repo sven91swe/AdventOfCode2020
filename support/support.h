@@ -8,28 +8,6 @@
 #include <vector>
 using namespace std;
 
-std::vector<int> readFileIntegers(std::string fileName)
-{
-
-  std::vector<int> data;
-
-  string line;
-  ifstream myfile(fileName);
-  if (myfile.is_open())
-  {
-    while (getline(myfile, line))
-    {
-      data.push_back(stoi(line));
-    }
-    myfile.close();
-  }
-
-  else
-    cout << "Unable to open file";
-
-  return data;
-}
-
 std::vector<std::string> readFileStrings(std::string fileName)
 {
 
@@ -48,6 +26,30 @@ std::vector<std::string> readFileStrings(std::string fileName)
 
   else
     cout << "Unable to open file";
+
+  return data;
+}
+
+std::vector<int> readFileIntegers(std::string fileName)
+{
+
+  std::vector<std::string> input = readFileStrings(fileName);
+  std::vector<int> data;
+  for(std::string line : input){
+    data.emplace_back(stoi(line));
+  }
+
+  return data;
+}
+
+std::vector<long long int> readFileLargeIntegers(std::string fileName)
+{
+
+  std::vector<std::string> input = readFileStrings(fileName);
+  std::vector<long long int> data;
+  for(std::string line : input){
+    data.emplace_back(stoll(line));
+  }
 
   return data;
 }
