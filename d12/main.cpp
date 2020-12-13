@@ -24,41 +24,34 @@ NavigationInstruction interpretNavigationInstruction(std::string line)
 {
   NavigationInstruction output;
   std::smatch match;
-  regex re("^([A-Za-z]+)(\\d+)$");
+  regex re("^([A-Za-z])(\\d+)$");
   regex_search(line, match, re);
 
-  std::string key = match.str(1);
+  char key = match.str(1).at(0);
   output.value = stoi(match.str(2));
 
-  //std::cout << key << " - " << output.value << std::endl;
-
-  if (key == "N")
-  {
-    output.dir = Direction::N;
-  }
-  else if (key == "S")
-  {
-    output.dir = Direction::S;
-  }
-  else if (key == "E")
-  {
-    output.dir = Direction::E;
-  }
-  else if (key == "W")
-  {
-    output.dir = Direction::W;
-  }
-  else if (key == "L")
-  {
-    output.dir = Direction::L;
-  }
-  else if (key == "R")
-  {
-    output.dir = Direction::R;
-  }
-  else //(key == "F")
-  {
-    output.dir = Direction::F;
+  switch(key){
+    case 'N':
+      output.dir = Direction::N;
+      break;
+    case 'S':
+      output.dir = Direction::S;
+      break;
+    case 'E':
+      output.dir = Direction::E;
+      break;
+    case 'W':
+      output.dir = Direction::W;
+      break;
+    case 'L':
+      output.dir = Direction::L;
+      break;
+    case 'R':
+      output.dir = Direction::R;
+      break;
+    default:
+      output.dir = Direction::F;
+      break;
   }
   return output;
 }
@@ -166,7 +159,7 @@ int main(int argc, char *argv[])
       updateDirection(currentDirection, i.dir, i.value);
     }
   }
-  std::cout << x << " " << y << " " << abs(x)+abs(y) << std::endl;
+  std::cout << "Part 1: " << x << " " << y << " " << abs(x)+abs(y) << std::endl;
 
   //Part 2
   x = 0;
@@ -193,7 +186,7 @@ int main(int argc, char *argv[])
       updateDirection2(i.dir, i.value, waypointX, waypointY);
     }
   }
-  std::cout << x << " " << y << " " << abs(x)+abs(y) << std::endl;
+  std::cout << "Part 2: " << x << " " << y << " " << abs(x)+abs(y) << std::endl;
 
   return 0;
 }
